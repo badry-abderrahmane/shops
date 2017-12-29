@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,7 +38,11 @@ return [
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
         ],
-
+        'mongodb' => [
+            'driver'   => 'mongodb',
+            'dsn' => env('DB_DSN','mongodb+srv://root:<PASSWORD>@shopapp-kdqrw.mongodb.net/test'),
+            'database' => 'shops',
+        ],
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
