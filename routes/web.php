@@ -14,3 +14,20 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/mongo', function () {
+    // $shops = App\Shop::all();
+    // dd($shops);
+
+    $shops =  App\Shop::where('location', 'near', [
+    	'$geometry' => [
+            'type' => 'Point',
+      	    'coordinates' => [
+      	        -6.81134,
+                  33.94514,
+              ],
+        ],
+        '$maxDistance' => 1000  ,
+    ])->get();
+    dd($shops);
+});
