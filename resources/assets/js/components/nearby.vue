@@ -16,18 +16,18 @@
         <v-layout row wrap>
           <v-flex
             xs12 sm4 md4 lg3
-            v-for="card in cards"
-            :key="card.title"
+            v-for="shop in shops"
+            :key="shop.name"
           >
             <v-card>
               <v-card-media
-                :src="card.src"
+                :src="shop.picture"
                 height="200px"
               >
                 <v-container fill-height fluid>
                   <v-layout fill-height>
                     <v-flex  align-end flexbox>
-                      <span class="headline white--text" v-text="card.title"></span>
+                      <span class="headline white--text" v-text="shop.name"></span>
                     </v-flex>
                   </v-layout>
                 </v-container>
@@ -53,21 +53,10 @@
 
 <script>
 export default {
-    data: () => ({
-      cards: [
-        { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg'},
-        { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg'},
-        { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg'},
-        { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg'},
-        { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg'},
-        { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg'},
-        { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg'},
-        { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg'},
-        { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg'},
-        { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg'},
-        { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg'},
-        { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg'}
-      ]
-    })
+    computed:{
+      shops: function(){
+        return this.$store.state.shops
+      }
+    }
 }
 </script>

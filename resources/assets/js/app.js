@@ -32,7 +32,7 @@ const app = new Vue({
   router,
   mounted(){
     this.$store.dispatch('LOAD_SHOPS_LIST')
-    this.$store.dispatch('LOAD_FAVORITE_LIST')
+    this.$store.dispatch('LOAD_FAVORITES_LIST')
   },
   created(){
     Event.$on('publish-success-message', (message) => {

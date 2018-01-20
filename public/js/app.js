@@ -377,6 +377,133 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(0);
+var normalizeHeaderName = __webpack_require__(23);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(6);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(6);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file.
@@ -481,133 +608,6 @@ module.exports = function normalizeComponent (
   }
 }
 
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(23);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(6);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(6);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 4 */
@@ -11882,14 +11882,14 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(38).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(38).setImmediate))
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 var __vue_script__ = __webpack_require__(45)
 /* template */
@@ -11936,7 +11936,7 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(55);
+module.exports = __webpack_require__(53);
 
 
 /***/ }),
@@ -11985,7 +11985,7 @@ var app = new Vue({
   router: router,
   mounted: function mounted() {
     this.$store.dispatch('LOAD_SHOPS_LIST');
-    this.$store.dispatch('LOAD_FAVORITE_LIST');
+    this.$store.dispatch('LOAD_FAVORITES_LIST');
   },
   created: function created() {
     var _this = this;
@@ -29167,7 +29167,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(16)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)(module)))
 
 /***/ }),
 /* 16 */
@@ -41856,7 +41856,7 @@ module.exports = __webpack_require__(20);
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(4);
 var Axios = __webpack_require__(22);
-var defaults = __webpack_require__(3);
+var defaults = __webpack_require__(2);
 
 /**
  * Create an instance of Axios
@@ -41939,7 +41939,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(3);
+var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(31);
 var dispatchRequest = __webpack_require__(32);
@@ -42480,7 +42480,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(33);
 var isCancel = __webpack_require__(8);
-var defaults = __webpack_require__(3);
+var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(34);
 var combineURLs = __webpack_require__(35);
 
@@ -42980,7 +42980,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(5)))
 
 /***/ }),
 /* 40 */
@@ -62644,26 +62644,38 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     shops: [],
     favorites: []
   },
-  mutations: {},
-  actions: {
-    LOAD_SHOPS_LIST: function LOAD_SHOPS_LIST(_ref) {
-      // axios.get('list/prospects').then((response) => {
-      //   commit('SET_PROSPECT_LIST', { list: response.data })
-      // }, (err) => {
-      //   console.log(err)
-      // })
+  mutations: {
+    SET_SHOPS_LIST: function SET_SHOPS_LIST(state, _ref) {
+      var list = _ref.list;
 
-      var commit = _ref.commit;
+      state.shops = list;
+    },
+    SET_FAVORITES_LIST: function SET_FAVORITES_LIST(state, _ref2) {
+      var list = _ref2.list;
+
+      state.favorites = list;
+    }
+  },
+
+  actions: {
+    LOAD_SHOPS_LIST: function LOAD_SHOPS_LIST(_ref3) {
+      var commit = _ref3.commit;
+
+      axios.get('shops/nearby').then(function (response) {
+        commit('SET_SHOPS_LIST', { list: response.data });
+      }, function (err) {
+        console.log(err);
+      });
     },
 
-    LOAD_FAVORITE_LIST: function LOAD_FAVORITE_LIST(_ref2) {
-      // axios.get('list/fournisseurs').then((response) => {
-      //   commit('SET_FOURNISSEUR_LIST', { list: response.data })
-      // }, (err) => {
-      //   console.log(err)
-      // })
+    LOAD_FAVORITES_LIST: function LOAD_FAVORITES_LIST(_ref4) {
+      var commit = _ref4.commit;
 
-      var commit = _ref2.commit;
+      axios.get('shops/favorite').then(function (response) {
+        commit('SET_FAVORITES_LIST', { list: response.data });
+      }, function (err) {
+        console.log(err);
+      });
     }
   }
 });
@@ -63623,7 +63635,7 @@ module.exports = {
   /**
   **    Shops routes
   **/
-  { name: 'Nearby', path: '/nearby', component: __webpack_require__(49) }, { name: 'Favorite', path: '/favorite', component: __webpack_require__(52) }]
+  { name: 'Nearby', path: '/nearby', component: __webpack_require__(47) }, { name: 'Favorite', path: '/favorite', component: __webpack_require__(50) }]
 };
 
 /***/ }),
@@ -63755,17 +63767,15 @@ if (false) {
 }
 
 /***/ }),
-/* 47 */,
-/* 48 */,
-/* 49 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(50)
+var __vue_script__ = __webpack_require__(48)
 /* template */
-var __vue_template__ = __webpack_require__(51)
+var __vue_template__ = __webpack_require__(49)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -63804,7 +63814,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -63864,15 +63874,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      cards: [{ title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg' }, { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg' }, { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg' }, { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg' }, { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg' }, { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg' }, { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg' }, { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg' }, { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg' }, { title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg' }, { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg' }, { title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg' }]
-    };
+  computed: {
+    shops: function shops() {
+      return this.$store.state.shops;
+    }
   }
 });
 
 /***/ }),
-/* 51 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -63957,11 +63967,11 @@ var render = function() {
               _c(
                 "v-layout",
                 { attrs: { row: "", wrap: "" } },
-                _vm._l(_vm.cards, function(card) {
+                _vm._l(_vm.shops, function(shop) {
                   return _c(
                     "v-flex",
                     {
-                      key: card.title,
+                      key: shop.name,
                       attrs: { xs12: "", sm4: "", md4: "", lg3: "" }
                     },
                     [
@@ -63970,7 +63980,7 @@ var render = function() {
                         [
                           _c(
                             "v-card-media",
-                            { attrs: { src: card.src, height: "200px" } },
+                            { attrs: { src: shop.picture, height: "200px" } },
                             [
                               _c(
                                 "v-container",
@@ -63992,7 +64002,7 @@ var render = function() {
                                           _c("span", {
                                             staticClass: "headline white--text",
                                             domProps: {
-                                              textContent: _vm._s(card.title)
+                                              textContent: _vm._s(shop.name)
                                             }
                                           })
                                         ]
@@ -64054,15 +64064,15 @@ if (false) {
 }
 
 /***/ }),
-/* 52 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(53)
+var __vue_script__ = __webpack_require__(51)
 /* template */
-var __vue_template__ = __webpack_require__(54)
+var __vue_template__ = __webpack_require__(52)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -64101,7 +64111,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 53 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -64158,15 +64168,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      cards: [{ title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg' }, { title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg' }]
-    };
+  computed: {
+    shops: function shops() {
+      return this.$store.state.favorites;
+    }
   }
 });
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -64251,11 +64261,11 @@ var render = function() {
               _c(
                 "v-layout",
                 { attrs: { row: "", wrap: "" } },
-                _vm._l(_vm.cards, function(card) {
+                _vm._l(_vm.shops, function(shop) {
                   return _c(
                     "v-flex",
                     {
-                      key: card.title,
+                      key: shop.name,
                       attrs: { xs12: "", sm4: "", md4: "", lg3: "" }
                     },
                     [
@@ -64264,7 +64274,7 @@ var render = function() {
                         [
                           _c(
                             "v-card-media",
-                            { attrs: { src: card.src, height: "200px" } },
+                            { attrs: { src: shop.picture, height: "200px" } },
                             [
                               _c(
                                 "v-container",
@@ -64286,7 +64296,7 @@ var render = function() {
                                           _c("span", {
                                             staticClass: "headline white--text",
                                             domProps: {
-                                              textContent: _vm._s(card.title)
+                                              textContent: _vm._s(shop.name)
                                             }
                                           })
                                         ]
@@ -64348,7 +64358,7 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
