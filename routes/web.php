@@ -11,23 +11,38 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/mongo', function () {
-    // $shops = App\Shop::all();
-    // dd($shops);
+// *
+// * Authentification routes : login, resgister, logout
+// *
+Auth::routes();
 
-    $shops =  App\Shop::where('location', 'near', [
-    	'$geometry' => [
-            'type' => 'Point',
-      	    'coordinates' => [
-      	        -6.81134,
-                  33.94514,
-              ],
-        ],
-        '$maxDistance' => 1000  ,
-    ])->get();
-    dd($shops);
-});
+
+// *
+// * Route home to let the fabulous VueJs take the wheel
+// *
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+// *
+// * Route to get the list of all nearby shops
+// *
+Route::get('/shops/nearby', 'ShopsController@nearby')->name('nearby');
+
+
+// *
+// * Route to get the list of user favourite shops
+// *
+Route::get('/shops/favorite', 'ShopsController@getFavorite')->name('favorite');
+
+
+// *
+// * Route to store new favorite shop
+// *
+Route::post('/shops/favorite', 'ShopsController@setFavorite')->name('favorite');
+
+
+// *
+// * Route to store new dislike shop
+// *
+Route::post('/shops/dislike', 'ShopsController@setDislike')->name('favorite');

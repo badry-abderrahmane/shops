@@ -1,6 +1,7 @@
 module.exports = {
     routes: [
       { name:'Home', path: '/', component: require('./components/home.vue')},
+      
       /**
       **    Shops routes
       **/

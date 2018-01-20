@@ -6,5 +6,5 @@ use Moloquent;
 
 class Shop extends Moloquent
 {
-    //
+    
 }
