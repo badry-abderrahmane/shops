@@ -8,6 +8,7 @@ use App\Dislike;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class ShopsController extends Controller
 {
@@ -33,10 +34,11 @@ class ShopsController extends Controller
       $favorites = $this->getFavorite();
       $dislikes  = $this->getDislike();
 
-      $shops = $nearbys->diff($favorites);
-      $shops2 = $shops->diff($dislikes);
+      $shopsWithoutFavorites = $nearbys->diff($favorites);
+      $shopsWithoutLastDislikes = $shopsWithoutFavorites->diff($dislikes);
 
-    return $shops->all();
+
+    return $shopsWithoutLastDislikes;
     }
 
 
@@ -69,7 +71,7 @@ class ShopsController extends Controller
 
     function getDislike()
     {
-      $dislikes = $this->user->dislikes->where('created_at', '<' , Carbon::now()->subHours(2));
+      $dislikes = $this->user->dislikes->where('created_at', '>' , Carbon::now()->subHours(2));
       $shops = collect();
       $dislikes->map( function($value,$key) use ($shops) {
           $shops->push($value->shop);
@@ -85,18 +87,25 @@ class ShopsController extends Controller
       $favorite->shop_id         = $request->shop_id;
       $insert  = $favorite->save();
 
-    return $insert;
+    return Response::json(['message' => 'Shop added to favorite'], 200);
+    }
+
+    public function unsetFavorite(Request $request)
+    {
+      $favorite = Favorite::where('shop_id', $request->shop_id)->first();
+      Favorite::destroy($favorite->id);
+
+    return Response::json(['message' => 'Shop removed from favorite'], 200);
     }
 
     function setDislike(Request $request)
     {
-      Favorite::destroy($request->id);
 
       $dislike = new Dislike();
       $dislike->user_id         = $this->user->id;
       $dislike->shop_id         = $request->shop_id;
       $insert  = $dislike->save();
 
-    return $insert;
+    return Response::json(['message' => 'Shop disliked'], 200);
     }
 }

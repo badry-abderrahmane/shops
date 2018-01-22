@@ -17,11 +17,14 @@
 // *
 Auth::routes();
 
+Route::get('/islogged', function(){
+  return Auth::user();
+});
 
 // *
 // * Route home to let the fabulous VueJs take the wheel
 // *
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
 
 // *
@@ -39,10 +42,14 @@ Route::get('/shops/favorite', 'ShopsController@getFavorite')->name('favorite');
 // *
 // * Route to store new favorite shop
 // *
-Route::post('/shops/favorite', 'ShopsController@setFavorite')->name('favorite');
+Route::post('/shops/favorite', 'ShopsController@setFavorite')->name('setfavorite');
 
+// *
+// * Route to remove shop from favorite
+// *
+Route::post('/shops/favorite/delete', 'ShopsController@unsetFavorite')->name('unsetfavorite');
 
 // *
 // * Route to store new dislike shop
 // *
-Route::post('/shops/dislike', 'ShopsController@setDislike')->name('favorite');
+Route::post('/shops/dislike', 'ShopsController@setDislike')->name('dislike');

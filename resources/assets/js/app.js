@@ -19,6 +19,16 @@ window.Event = new Vue();
 
 import { routes } from './router.js';
 const router = new VueRouter({ routes });
+
+router.beforeResolve((to, from, next) => {
+    if (to.name != 'Login' && to.name != 'Register') {
+        axios.get('/islogged')
+          .then(response => {
+            if (response.data) { next(); }
+            else{ next({ path: '/auth/login' }); }
+        });
+    }else{ next(); }
+})
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
