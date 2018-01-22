@@ -53,11 +53,7 @@ You will need also to load the dump data for test running the command below
 ```
 mongorestore --drop -d db_name -c collection_name path/file.bson
 ```
-<<<<<<< HEAD
 >As we are dealing with locations you should add a "2dsphere" index on the shops collection
-
-=======
->>>>>>> 059858f9e07178995450cd1569fc8e272e711d9c
 
 #### <i class="icon-file"></i> Step 3:  Deploy
 You need to run this command below
