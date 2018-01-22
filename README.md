@@ -29,7 +29,6 @@ composer install
 #### <i class="icon-file"></i> Step 2: Database
 
 > **Note:**
-
 > If you wish to use the existing **Test Database** keep the parameters as they are in the config file. It already contains the needed collections.
 
 I did choose to implement a MongoDB database to keep it simple and clean. The database configuration is located in : **config/database.php**, you will need to set the "port" and "dsn" as below:
@@ -47,3 +46,7 @@ You will need also to run the migration command:
 ```
 
 #### <i class="icon-file"></i> Step 3:  Deploy
+You need to run this command below
+```
+> php artisan serv
+```
