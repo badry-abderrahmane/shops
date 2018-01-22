@@ -13,7 +13,7 @@ class CreateFavoritesTable extends Migration
      */
     public function up()
     {
-        Schema::create('favorites', function (Blueprint $table) {
+        Schema::create('favorites', function ($collection) {
         });
     }
 

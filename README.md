@@ -44,6 +44,10 @@ You will need also to run the migration command:
 ```
 > php artisan migrate
 ```
+You will need also to load the dump data for test running the command below
+```
+mongorestore --drop -d db_name -c collection_name path/file.bson
+```
 
 #### <i class="icon-file"></i> Step 3:  Deploy
 You need to run this command below
