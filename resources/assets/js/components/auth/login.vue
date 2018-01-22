@@ -16,26 +16,31 @@
                   <v-text-field dark color="green"
                     label="Email"
                     v-model="email"
-                    :rules="emailRules"
                     :counter="10"
+                    :error="emailError"
                     required
                   ></v-text-field>
                   <v-text-field dark color="green"
-                    name="password"
+                    v-model="password"
                     label="Enter your password"
-                    hint="At least 6 characters"
-                    min="6"
-                    :append-icon="e3 ? 'visibility' : 'visibility_off'"
-                    :append-icon-cb="() => (e3 = !e3)"
-                    :type="e3 ? 'password' : 'text'"
-                    :rules="passwordRules"
+                    :append-icon="show ? 'visibility' : 'visibility_off'"
+                    :append-icon-cb="() => (show = !show)"
+                    :type="show ? 'password' : 'text'"
+                    :error="passwordError"
                   ></v-text-field>
+
+                    <ul v-if="errors">
+                      <li v-for="error in errors">
+                        <span class="body-2 error--text ml-5">{{ error[0] }}</span>
+                      </li>
+                    </ul>
+
                 </v-form>
               </v-flex>
 
             <v-card-actions>
-              <v-btn flat dark>Login</v-btn>&nbsp;Or&nbsp;
-              <v-btn flat dark>Register</v-btn>
+              <v-btn flat dark @click="login">Login</v-btn>&nbsp;Or&nbsp;
+              <v-btn flat dark @click="$router.push({ path:'register' })">Register</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -48,19 +53,32 @@ export default {
   data () {
     return {
       valid: false,
-      e3: true,
+      show: true,
       email: '',
-      emailRules: [
-        (v) => !!v || 'E-mail is required',
-        (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-      ],
-
       password: '',
-      passwordRules: [
-        (v) => !!v || 'Password is required',
-        (v) => v.length >= 6 || 'Password must be more than 6 characters'
-      ],
-
+      errors:'',
+      emailError: false,
+      passwordError: false,
+    }
+  },
+  methods:{
+    login(){
+      axios.post('/login', {
+        email: this.email,
+        password: this.password
+      })
+      .then((response) => {
+        this.$router.push({ path:"/" })
+      })
+      .catch((error) => {
+        this.errors = error.response.data.errors;
+        if (this.errors.email) {
+          this.emailError = true
+        }
+        if (this.errors.password) {
+          this.passwordError = true
+        }
+      });
     }
   }
 }

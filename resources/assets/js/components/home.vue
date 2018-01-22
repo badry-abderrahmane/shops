@@ -6,6 +6,7 @@
       <v-toolbar-items class="hidden-sm-and-down">
       <v-btn flat @click="$router.push({ name: 'Nearby' })"><v-icon color="green" class="mr-2">location_on</v-icon>Nearby Shops</v-btn>
       <v-btn flat @click="$router.push({ name: 'Favorite' })"><v-icon color="red" class="mr-2">favorite</v-icon>My preferred Shops</v-btn>
+      <v-btn flat @click="logout"><v-icon color="red" class="mr-2">settings_power</v-icon>LOGOUT</v-btn>
     </v-toolbar-items>
     </v-toolbar>
     <v-content>
@@ -23,6 +24,13 @@
       return {
         fixed: false,
         title: 'Nearby Shops v0.0.1'
+      }
+    },
+    methods:{
+      logout(){
+        axios.post('/logout').then(() => {
+          location.reload()
+        })
       }
     }
   }

@@ -1,5 +1,11 @@
-module.exports = {
-    routes: [
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import store from './store.js'
+
+Vue.use(VueRouter)
+
+//define routes
+const routes = [
       { path: '/', component: require('./components/home.vue'),
           children: [
             /**
@@ -23,4 +29,25 @@ module.exports = {
           ],
       },
     ]
-  }
+
+
+  export const router = new VueRouter({ routes });
+
+  router.beforeEach((to, from, next) => {
+      if (to.name != 'Login' && to.name != 'Register') {
+          axios.get('/islogged')
+            .then(response => {
+              if (response.data) {
+                store.dispatch('LOAD_SHOPS_LIST')
+                store.dispatch('LOAD_FAVORITES_LIST')
+                next();
+              }
+              else{ next({ path: '/auth/login' }); }
+          });
+      }else{
+
+        next();
+      }
+  })
+
+  export default router
