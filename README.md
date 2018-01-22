@@ -25,6 +25,11 @@ The next thing to do is installing the required dependencies, run the following 
 ```
 composer install
 ```
+And you need to generate a key for the application, you could do that by running:
+
+```
+php artisan key:generate
+```
 
 #### <i class="icon-file"></i> Step 2: Database
 
@@ -44,9 +49,22 @@ You will need also to run the migration command:
 ```
 > php artisan migrate
 ```
+You will need also to load the dump data for test running the command below
+```
+mongorestore --drop -d db_name -c collection_name path/file.bson
+```
+>As we are dealing with locations you should add a "2dsphere" index on the shops collection
+
 
 #### <i class="icon-file"></i> Step 3:  Deploy
 You need to run this command below
 ```
 > php artisan serv
 ```
+
+Official documentation
+-------------
+
+**Laravel 5.5** :  [Official Guide](https://laravel.com/docs/5.5/installation)
+**VueJs 2.5** :  [Official Guide](https://vuex.vuejs.org/en/)
+**VuetifyJS 0.17** :  [Official Guide](https://vuetifyjs.com/)
