@@ -69,7 +69,7 @@ export default {
       axios.post('/shops/favorite/delete', {
         shop_id: id
       })
-      .then(function (response) {
+      .then(() => {
         this.$store.dispatch('LOAD_SHOPS_LIST')
         this.$store.dispatch('LOAD_FAVORITES_LIST')
       })

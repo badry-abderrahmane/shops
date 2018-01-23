@@ -45,7 +45,6 @@ const routes = [
               else{ next({ path: '/auth/login' }); }
           });
       }else{
-
         next();
       }
   })

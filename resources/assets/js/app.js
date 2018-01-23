@@ -6,60 +6,26 @@
  */
 
 require('./bootstrap');
-
 window.Vue = require('vue');
+
+// Include Vutify
 import Vuetify from 'vuetify'
-// import VueRouter from 'vue-router';
+
+// Include the Store
 import { store } from './store';
 
+// Attach vutify to the vue instance
 Vue.use(Vuetify)
-// Vue.use(VueRouter);
 
-window.Event = new Vue();
-
+// Include the Router
 import { router } from './router.js';
 
-
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
+// Initiate the app root component
 Vue.component('shops-app', require('./components/home.vue'));
 
 const app = new Vue({
+  // Attach the Store Instance
   store,
+  // Attach the Router Instance
   router,
-  mounted(){
-
-  },
-  created(){
-
-
-    Event.$on('publish-success-message', (message) => {
-      this.notifSuccess(message);
-    });
-  },
-  methods:{
-    /**
-    * Notif Functions
-    *
-    **/
-    notifSuccess(message){
-      $.toast().reset('all');
-  		$("body").removeAttr('class');
-  		$.toast({
-              heading: message,
-              text: '',
-              position: 'top-right',
-              loaderBg:'#fec107',
-              icon: 'success',
-              hideAfter: 3500,
-              stack: 6
-            });
-  		return false;
-    }
-  }
 }).$mount('#app');

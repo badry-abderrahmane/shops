@@ -72,7 +72,7 @@ export default {
         axios.post('/shops/favorite', {
           shop_id: id
         })
-        .then(function (response) {
+        .then(() => {
           this.$store.dispatch('LOAD_SHOPS_LIST')
           this.$store.dispatch('LOAD_FAVORITES_LIST')
         })
@@ -84,7 +84,7 @@ export default {
         axios.post('/shops/dislike', {
           shop_id: id
         })
-        .then(function (response) {
+        .then(() => {
           this.$store.dispatch('LOAD_SHOPS_LIST')
           this.$store.dispatch('LOAD_FAVORITES_LIST')
         })

@@ -17,6 +17,10 @@
 // *
 Auth::routes();
 
+// *
+// * Authentification check
+// * Return Connected User Collection
+// *
 Route::get('/islogged', function(){
   return Auth::user();
 });

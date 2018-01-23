@@ -42,7 +42,7 @@ return [
             'driver'   => 'mongodb',
             'port' => 27017,
             'dsn' => 'mongodb://root:medirelay1305@shopapp-shard-00-00-kdqrw.mongodb.net:27017,shopapp-shard-00-01-kdqrw.mongodb.net:27017,shopapp-shard-00-02-kdqrw.mongodb.net:27017/test?ssl=true&replicaSet=shopapp-shard-0&authSource=admin',
-            'database' => 'shops2',
+            'database' => 'shops',
         ],
         'mysql' => [
             'driver' => 'mysql',

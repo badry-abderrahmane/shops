@@ -12318,59 +12318,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 
 __webpack_require__(17);
-
 window.Vue = __webpack_require__(4);
 
-// import VueRouter from 'vue-router';
+// Include Vutify
 
 
+// Include the Store
+
+
+// Attach vutify to the vue instance
 Vue.use(__WEBPACK_IMPORTED_MODULE_0_vuetify___default.a);
-// Vue.use(VueRouter);
 
-window.Event = new Vue();
-
+// Include the Router
 
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
+// Initiate the app root component
 Vue.component('shops-app', __webpack_require__(14));
 
 var app = new Vue({
+  // Attach the Store Instance
   store: __WEBPACK_IMPORTED_MODULE_1__store__["b" /* store */],
-  router: __WEBPACK_IMPORTED_MODULE_2__router_js__["a" /* router */],
-  mounted: function mounted() {},
-  created: function created() {
-    var _this = this;
-
-    Event.$on('publish-success-message', function (message) {
-      _this.notifSuccess(message);
-    });
-  },
-
-  methods: {
-    /**
-    * Notif Functions
-    *
-    **/
-    notifSuccess: function notifSuccess(message) {
-      $.toast().reset('all');
-      $("body").removeAttr('class');
-      $.toast({
-        heading: message,
-        text: '',
-        position: 'top-right',
-        loaderBg: '#fec107',
-        icon: 'success',
-        hideAfter: 3500,
-        stack: 6
-      });
-      return false;
-    }
-  }
+  // Attach the Router Instance
+  router: __WEBPACK_IMPORTED_MODULE_2__router_js__["a" /* router */]
 }).$mount('#app');
 
 /***/ }),
@@ -61344,7 +61313,6 @@ router.beforeEach(function (to, from, next) {
       }
     });
   } else {
-
     next();
   }
 });
@@ -64490,21 +64458,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   methods: {
     favorite: function favorite(id) {
+      var _this = this;
+
       axios.post('/shops/favorite', {
         shop_id: id
-      }).then(function (response) {
-        this.$store.dispatch('LOAD_SHOPS_LIST');
-        this.$store.dispatch('LOAD_FAVORITES_LIST');
+      }).then(function () {
+        _this.$store.dispatch('LOAD_SHOPS_LIST');
+        _this.$store.dispatch('LOAD_FAVORITES_LIST');
       }).catch(function (error) {
         console.log(error);
       });
     },
     dislike: function dislike(id) {
+      var _this2 = this;
+
       axios.post('/shops/dislike', {
         shop_id: id
-      }).then(function (response) {
-        this.$store.dispatch('LOAD_SHOPS_LIST');
-        this.$store.dispatch('LOAD_FAVORITES_LIST');
+      }).then(function () {
+        _this2.$store.dispatch('LOAD_SHOPS_LIST');
+        _this2.$store.dispatch('LOAD_FAVORITES_LIST');
       }).catch(function (error) {
         console.log(error);
       });

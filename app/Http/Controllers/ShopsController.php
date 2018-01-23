@@ -15,7 +15,7 @@ class ShopsController extends Controller
     protected $user;
      // *
      // * Instantiate a new controller instance
-     // *  and get connected user.
+     // *  and get connected  user.
      // *
      // * @return void
      // *
@@ -27,7 +27,13 @@ class ShopsController extends Controller
       });
     }
 
-
+    // *
+    // *  Get Combined collection of
+    // *  shops without the shops in favorite.
+    // *  and without the shops disliked the last hours
+    // *
+    // * @return collection
+    // *
     public function nearby()
     {
       $nearbys   = $this->getNearBy();
@@ -41,7 +47,12 @@ class ShopsController extends Controller
     return $shopsWithoutLastDislikes;
     }
 
-
+    // *
+    // *  Get the collection of nearby
+    // *  shops based on a given location
+    // *
+    // * @return collection
+    // *
     function getNearBy()
     {
       $shops =  Shop::where('location', 'near', [
@@ -58,6 +69,12 @@ class ShopsController extends Controller
       return $shops;
     }
 
+    // *
+    // *  Get the collection of favorite
+    // *  shops of the connected user
+    // *
+    // * @return collection
+    // *
     function getFavorite()
     {
       $favorites = $this->user->favorites;
@@ -69,6 +86,12 @@ class ShopsController extends Controller
     return $shops;
     }
 
+    // *
+    // *  Get the collection of disliked
+    // *  shops of the connected user
+    // *
+    // * @return collection
+    // *
     function getDislike()
     {
       $dislikes = $this->user->dislikes->where('created_at', '>' , Carbon::now()->subHours(2));
@@ -80,6 +103,12 @@ class ShopsController extends Controller
     return $shops;
     }
 
+    // *
+    // *  Set a new favorite shop
+    // *  linking it to the connected user
+    // *
+    // * @return Json Response
+    // *
     function setFavorite(Request $request)
     {
       $favorite = new Favorite();
@@ -90,6 +119,12 @@ class ShopsController extends Controller
     return Response::json(['message' => 'Shop added to favorite'], 200);
     }
 
+    // *
+    // *  Unset a favorite shop
+    // *  Deleting it from favorite table
+    // *
+    // * @return Json Response
+    // *
     public function unsetFavorite(Request $request)
     {
       $favorite = Favorite::where('shop_id', $request->shop_id)->first();
@@ -98,6 +133,12 @@ class ShopsController extends Controller
     return Response::json(['message' => 'Shop removed from favorite'], 200);
     }
 
+    // *
+    // *  Set a new disliked shop
+    // *  linking it to the connected user
+    // *
+    // * @return Json Response
+    // *
     function setDislike(Request $request)
     {
 
